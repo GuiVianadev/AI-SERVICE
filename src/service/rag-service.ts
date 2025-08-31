@@ -1,38 +1,3 @@
-// import {
-//   NewResourceParams,
-//   insertResourceSchema,
-//   resources,
-// } from '../lib/db/schema/resource';
-// import { db } from '../lib/db';
-// import { generateEmbeddings } from '../lib/ai/embedding'
-// import { embeddings as embeddingsTable } from '../lib/db/schema/embeddings';
-
-// export const createResource = async (input: NewResourceParams) => {
-//   try {
-//     const { content, fileName } = insertResourceSchema.parse(input);
-
-//     const [resource] = await db
-//       .insert(resources)
-//       .values({ content, fileName })
-//       .returning();
-
-//     const embeddings = await generateEmbeddings(content);
-//     await db.insert(embeddingsTable).values(
-//       embeddings.map(embedding => ({
-//         id: crypto.randomUUID(),
-//         resourceId: resource.id,
-//         ...embedding,
-//       })),
-//     );
-
-//     return 'Resource successfully created and embedded.';
-//   } catch (error) {
-//     return error instanceof Error && error.message.length > 0
-//       ? error.message
-//       : 'Error, please try again.';
-//   }
-// };
-
 import {
   NewResourceParams,
   insertResourceSchema,
@@ -49,7 +14,6 @@ export const createResourceWithFlashcards = async (input: NewResourceParams, qua
   try {
     const { content, fileName } = insertResourceSchema.parse(input);
 
-    // 1. Criar resource e embeddings
     const [resource] = await db
       .insert(resources)
       .values({ content, fileName })
@@ -64,7 +28,6 @@ export const createResourceWithFlashcards = async (input: NewResourceParams, qua
       })),
     );
 
-    // 2. Gerar flashcards usando o conteúdo
     const flashcardsResponse = await generateObject({
       model: openai('gpt-4o'),
       system: "Você é um especialista em criação de flashcards educacionais. Analise o conteúdo fornecido e crie flashcards que cubram os conceitos mais importantes.",
