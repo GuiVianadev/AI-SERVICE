@@ -19,6 +19,7 @@
   "description": "",
   "dependencies": {
     "@ai-sdk/openai": "^2.0.23",
+    "@fastify/multipart": "^9.0.3",
     "ai": "^5.0.28",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.5",
