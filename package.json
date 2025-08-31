@@ -4,7 +4,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --env-file=.env --watch src/server.ts",
-    "type-check": "tsc --build"
+    "type-check": "tsc --build",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:drop": "drizzle-kit drop",
+    "db:pull": "drizzle-kit introspect",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:check": "drizzle-kit check"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +21,6 @@
     "@ai-sdk/openai": "^2.0.23",
     "ai": "^5.0.28",
     "dotenv": "^17.2.1",
-    "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.5",
     "drizzle-zod": "^0.8.3",
     "fastify": "^5.5.0",
@@ -25,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
+    "drizzle-kit": "^0.31.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
