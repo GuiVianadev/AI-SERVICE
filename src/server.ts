@@ -3,6 +3,7 @@ import z from 'zod';
 import { aiPromptService } from './service/ai-prompt-service';
 import { createResourceWithFlashcards } from './service/rag-service';
 import fastifyMultipart from '@fastify/multipart';
+import { pdfService } from './service/pdf-service';
 
 const fastify = Fastify({ logger: true });
 
@@ -20,6 +21,9 @@ async function start() {
  
     const FlashCardPromptRequestSchema = z.object({
       topic: z.string(),
+      quantity: z.number().min(1).max(15),
+    });
+    const FlashCardPDFRequestSchema = z.object({
       quantity: z.number().min(1).max(15),
     });
 
@@ -72,35 +76,23 @@ async function start() {
       }
     });
 
-    fastify.post('/upload-with-flashcards', async (request, reply) => {
-      try {
-        console.log('📥 Recebendo arquivo...');
-        
-        const data = await request.file();
-        
-        if (!data) {
-          return reply.code(400).send({ error: 'Nenhum arquivo enviado' });
-        }
-
-        console.log(`📁 Arquivo: ${data.filename}`);
-        
-        // Ler o conteúdo do arquivo
-        const buffer = await data.toBuffer();
-        const content = buffer.toString('utf8');
-        
-        console.log(`📄 Conteúdo: ${content.length} caracteres`);
-        
-        const result = await createResourceWithFlashcards({
-          content,
-          fileName: data.filename || 'uploaded-file.txt'
-        }, 8);
-        
-        return result;
-      } catch (error) {
-        console.error('❌ Erro no upload:', error);
-        return reply.code(500).send({ error: error.message });
-      }
-    });
+  fastify.post("/pdf/flashcards", async (request, reply) => {
+    const data = await request.file();
+    
+    if (!data) {
+      return reply.status(400).send({ error: "Nenhum arquivo enviado" });
+    }
+    const query = request.query as { quantity?: string };
+    const quantity = parseInt(query.quantity || '8');
+    
+    const buffer = await data.toBuffer();
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:${data.mimetype};base64,${base64}`;
+    
+    const result = await pdfService(dataUrl, quantity);
+    
+    return reply.send(result);
+  });
 
     fastify.get('/health', async (request, reply) => {
       return { status: 'ok', timestamp: new Date().toISOString() };

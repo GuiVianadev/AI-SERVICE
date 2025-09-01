@@ -24,6 +24,30 @@ export const generateEmbeddings = async (
   return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
 };
 
+export async function convertFilesToDataURLs(files: FileList) {
+  return Promise.all(
+    Array.from(files).map(
+      file =>
+        new Promise<{
+          type: 'file';
+          mediaType: string;
+          url: string;
+        }>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              type: 'file',
+              mediaType: file.type,
+              url: reader.result as string,
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        }),
+    ),
+  );
+}
+
 export const generateEmbedding = async (value: string): Promise<number[]> => {
   const input = value.replaceAll('\\n', ' ');
   const { embedding } = await embed({
