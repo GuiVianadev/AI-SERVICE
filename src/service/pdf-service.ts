@@ -16,7 +16,7 @@ export async function pdfService(pdfDataUrl: string, quantity: number) {
           },
           {
             type: "text", 
-            text: `Analise este PDF e gere ${quantity} flashcards educacionais de alta qualidade baseados no conteúdo. Extraia conceitos principais, definições importantes e informações essenciais.`
+            text: `Você é um especialista em criação de flashcards educacionais. analise este PDF e gere ${quantity} flashcards educacionais de alta qualidade baseados no conteúdo. Extraia conceitos principais, definições importantes e informações essenciais.`
           }
         ]
       }
